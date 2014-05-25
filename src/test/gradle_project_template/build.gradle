@@ -1,0 +1,24 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1'
+    }
+}
+
+apply plugin: 'android'
+apply plugin: 'android-native-dependencies'
+
+repositories {
+    mavenCentral()
+}
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+}
+
+

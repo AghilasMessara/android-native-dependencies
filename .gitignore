@@ -1,0 +1,11 @@
+.DS_Store
+.gradle
+build/
+
+# Package Files #
+*.jar
+*.class
+
+# Ignore Gradle GUI config
+gradle-app.setting
+gradle.properties

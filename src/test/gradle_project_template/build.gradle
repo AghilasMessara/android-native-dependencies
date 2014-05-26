@@ -3,13 +3,16 @@ buildscript {
         mavenCentral()
         mavenLocal()
         maven { url 'http://jcenter.bintray.com' }
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.10.+'
         classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1'
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.+'
     }
 }
 
+apply plugin: 'android-sdk-manager'
 apply plugin: 'android'
 apply plugin: 'android-native-dependencies'
 

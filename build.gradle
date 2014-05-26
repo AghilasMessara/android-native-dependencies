@@ -64,10 +64,29 @@ modifyPom {
     }
 }
 
+task srcJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allSource
+}
+
+task gdocJar(type: Jar, dependsOn: groovydoc) {
+    classifier 'groovydoc'
+    from groovydoc.destinationDir
+}
+
+artifacts {
+    archives srcJar
+    archives gdocJar
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+
+            artifact srcJar
+            artifact gdocJar
+
             pom.withXml {
                 def root = asNode()
                 root.appendNode('name', 'Android Native Dependencies')
@@ -109,5 +128,4 @@ bintray {
     task wrapper(type: Wrapper) {
         gradleVersion = '1.10'
     }
-
 }

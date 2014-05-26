@@ -1,3 +1,98 @@
 Android Native Dependencies
 ===========================
 
+Overview
+========
+This Gradle plugin allows you to automatically *resolve and add* your native dependencies to `jniLibs` directory
+
+Usage
+=====
+Apply the plugin in your `build.gradle` after the regular `android` plugin, then declare the list of your native dependencies.
+```groovy
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.android.tools.build:gradle:0.10.+'
+    classpath 'com.nabilhachicha:android-native-dependencies:0.1'
+  }
+}
+
+apply plugin: 'android'
+apply plugin: 'android-native-dependencies'
+
+native_dependencies {
+    artifact 'com.snappydb:snappydb-native:0.2+:arm'
+    artifact 'com.snappydb:snappydb-native:0.2+:x86'
+}
+
+dependencies {
+    //regular Jar dependencies ...
+}
+
+```
+
+Convention
+==========
+
+> The artifact DSL follows the naming convention for Maven artifacts.
+> thus, you can use one of the following syntax:
+
+- abbreviated *group:name:version[:classifier]*
+
+```groovy
+//adding x86 classifier will resolve only intel's (.so) lib
+native_dependencies {
+    artifact 'com.snappydb:snappydb-native:0.2+:x86'
+}
+
+//omit the classifier will resolve all supported architectures
+native_dependencies {
+    artifact 'com.snappydb:snappydb-native:0.2+'
+}
+```
+
+- map-style notation
+
+
+```groovy
+//adding x86 classifier will resolve only intel's (.so) lib
+native_dependencies {
+    artifact group: 'com.snappydb', name: 'snappydb-native', version: '0.2+', classifier: 'x86'
+}
+
+//omit the classifier will resolve all supported architectures
+native_dependencies {
+    artifact group: 'com.snappydb', name: 'snappydb-native', version: '0.2+'
+}
+```
+    
+In both notations, *classifier* is optional. this means that when omitted, the plugin try to resolve the artifact for *all* architectures: `armeabi`, `armeabi-v7a`, `x86` and `mips`.
+
+Tasks
+=====
+
+The plugin adds the `resolveNativeDependencies` task to your project, this task runs automatically whenever you build your project. 
+##### Note: #####
+The plugin uses [Gradle incremental task](http://www.gradle.org/docs/current/dsl/org.gradle.api.tasks.incremental.IncrementalTaskInputs.html) system to run faster if the configuration didn't change since the last build.
+
+License
+=======
+
+    Copyright 2014 Nabil Hachicha
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+
+
+

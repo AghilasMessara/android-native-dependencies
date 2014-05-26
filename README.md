@@ -1,9 +1,8 @@
-Android Native Dependencies
-===========================
-
 Overview
 ========
-This Gradle plugin allows you to automatically *resolve and add* your native dependencies to `jniLibs` directory
+This Gradle plugin allows you to automatically *resolve and add* your native dependencies to `jniLibs` directory.
+
+![screen shot 2014-04-10 at 15 29 40](https://cloud.githubusercontent.com/assets/1793238/2668930/6969020e-c0bd-11e3-9116-ae879991e356.png)
 
 Usage
 =====

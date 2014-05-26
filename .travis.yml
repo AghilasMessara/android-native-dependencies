@@ -3,5 +3,5 @@ language: java
 env:
   global:
     - TERM=dumb
-after_failure: "cat file:///home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/index.html"
+after_failure: "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/index.html"
 

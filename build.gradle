@@ -115,8 +115,8 @@ publishing {
 }
 
 bintray {
-    key = bintray_apikey
-    user = bintray_user
+    key = project.hasProperty('bintray_apikey') ? project.getProperty('bintray_apikey') : null
+    user = project.hasProperty('bintray_user') ? project.getProperty('bintray_user') : null
     publications = ['mavenJava']
 
     pkg {

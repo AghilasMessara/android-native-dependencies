@@ -22,7 +22,7 @@ apply plugin: 'android'
 apply plugin: 'android-native-dependencies'
 
 native_dependencies {
-    artifact 'com.snappydb:snappydb-native:0.2+:arm'
+    artifact 'com.snappydb:snappydb-native:0.2+:armeabi'
     artifact 'com.snappydb:snappydb-native:0.2+:x86'
 }
 

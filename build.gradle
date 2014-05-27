@@ -87,6 +87,7 @@ publishing {
 
             artifact srcJar
             artifact gdocJar
+            artifact javadocJar
 
             pom.withXml {
                 def root = asNode()
@@ -130,5 +131,4 @@ bintray {
         gradleVersion = '1.10'
     }
 
-    dryRun = true
 }

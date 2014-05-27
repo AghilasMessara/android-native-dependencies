@@ -77,6 +77,7 @@ task gdocJar(type: Jar, dependsOn: groovydoc) {
 artifacts {
     archives srcJar
     archives gdocJar
+    archives javadocJar
 }
 
 publishing {
@@ -128,4 +129,6 @@ bintray {
     task wrapper(type: Wrapper) {
         gradleVersion = '1.10'
     }
+
+    dryRun = true
 }

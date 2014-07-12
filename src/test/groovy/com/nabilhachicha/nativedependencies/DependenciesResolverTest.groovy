@@ -173,7 +173,7 @@ class DependenciesResolverTest {
     public void testRangeNotationResolveWithStringNotation() {
         assertThat(mJniLibs).exists()
 
-        assertThat(mArmDir).exists()
+        assertThat(mX86Dir).exists()
 
         assertThat(mX86DepFile).exists()
     }

@@ -23,9 +23,4 @@ android {
     buildToolsVersion "19.1.0"
 }
 
-native_dependencies {
-      artifact 'com.snappydb:snappydb-native:0.2.0:armeabi'
-      artifact 'com.snappydb:snappydb-native:0.2.+:x86'
-}
-
 

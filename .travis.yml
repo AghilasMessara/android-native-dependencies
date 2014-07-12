@@ -1,11 +1,20 @@
+branches:
+  only:
+    - master
+    - dev
+
 language: java
 
+install: 
+  - "./gradlew install"
+  
 env:
   global:
     - TERM=dumb
 
 #debug task (dump gradle test report)
-after_failure: "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/index.html"
-after_failure: "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.DependenciesResolverTest.html"
-after_failure: "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.BasicPluginTest.html"
-after_failure: "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.DependenciesResolverTest.html"
+after_failure: 
+	- "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/index.html"
+	- "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.DependenciesResolverTest.html"
+	- "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.BasicPluginTest.html"
+	- "cat /home/travis/build/nhachicha/android-native-dependencies/build/reports/tests/classes/com.nabilhachicha.nativedependencies.DependenciesResolverTest.html"

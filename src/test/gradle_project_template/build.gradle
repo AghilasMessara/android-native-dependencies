@@ -1,10 +1,11 @@
 buildscript {
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.10.+'
-        classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1'
+        classpath 'com.android.tools.build:gradle:+'
+        classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1.+'
         classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.+'
     }
 }
@@ -19,7 +20,12 @@ repositories {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1.0"
+}
+
+native_dependencies {
+      artifact 'com.snappydb:snappydb-native:0.2.0:armeabi'
+      artifact 'com.snappydb:snappydb-native:0.2.+:x86'
 }
 
 

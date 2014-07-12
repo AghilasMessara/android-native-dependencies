@@ -158,6 +158,26 @@ class DependenciesResolverTest {
         assertThat(mArmv7aDepFile).exists()
     }
 
+    @Artifacts ("artifact group: 'com.snappydb', name: 'snappydb-native', version: '0.2.+', classifier: 'armeabi'")
+    @Test
+    public void testRangeNotationResolveWithMapping() {
+        assertThat(mJniLibs).exists()
+
+        assertThat(mArmDir).exists()
+
+        assertThat(mArmDepFile).exists()
+    }
+    
+    @Artifacts ("artifact 'com.snappydb:snappydb-native:0.2.+:x86'")
+    @Test
+    public void testRangeNotationResolveWithStringNotation() {
+        assertThat(mJniLibs).exists()
+
+        assertThat(mX86Dir).exists()
+
+        assertThat(mX86DepFile).exists()
+    }
+
     @Artifacts ("artifact 'com.snappydb:snappydb-native:0.2.0:powerpc'")
     @Test
     public void testUnsupportedArchitectureWithStringNotation() {

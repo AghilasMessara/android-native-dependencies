@@ -6,7 +6,7 @@ branches:
 language: java
 
 install: 
-  - "./gradlew install"
+  - "./gradlew assemble install test"
 
 env:
   global:

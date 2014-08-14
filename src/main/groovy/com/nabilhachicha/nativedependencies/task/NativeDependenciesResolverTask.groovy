@@ -144,7 +144,11 @@ class NativeDependenciesResolverTask extends DefaultTask {
                     "src"+File.separator+"main"+File.separator+
                     "jniLibs"+File.separator+"$architecture"
             rename { fileName ->
-                     "lib" + depName+ ".so"
+                    if (depName.startsWith("lib")) {
+                        depName + ".so"
+                    } else {
+                        "lib" + depName+ ".so"
+                    }
             }
         }
     }

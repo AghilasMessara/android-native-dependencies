@@ -44,10 +44,9 @@ class NativeDependenciesPlugin implements Plugin<Project> {
                 Task task = project.task(TASK_NAME, type: NativeDependenciesResolverTask)
                 task.setDescription(TASK_DESCRIPTION)
                 task.setGroup(TASK_GROUP)
-                
                 task.
                 	dependencies = project.native_dependencies.dependencies
-                
+
                 project.tasks.findByName(TASK_ATTACH_TO_LIFECYCLE).dependsOn task
             }
         }

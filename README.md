@@ -69,6 +69,18 @@ native_dependencies {
     
 In both notations, *classifier* is optional. this means that when omitted, the plugin try to resolve the artifact for *all* architectures: `armeabi`, `armeabi-v7a`, `x86` and `mips`.
 
+- Disable `lib` prefix:
+
+You may want to disable the plugin from prefixing the resolved artifact with `lib`  (when copying into **jniLibs** directory) 
+```groovy
+native_dependencies {
+    artifact ('com.snappydb:snappydb-native:0.2.+:armeabi') {
+           addLibPrefixToArtifact=false
+    }
+}
+```
+in this example the ARM dependency will have the name `snappydb-native.so` rather than `libsnappydb-native.so`
+
 Tasks
 =====
 

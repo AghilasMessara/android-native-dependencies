@@ -23,10 +23,11 @@ import org.gradle.api.artifacts.Dependency
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.artifacts.Configuration
-import  org.gradle.api.tasks.incremental.IncrementalTaskInputs
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import java.io.File
+import com.nabilhachicha.nativedependencies.extension.NativeDep
 
 class NativeDependenciesResolverTask extends DefaultTask {
 	def @Input dependencies
@@ -46,39 +47,37 @@ class NativeDependenciesResolverTask extends DefaultTask {
     @TaskAction
     def exec (IncrementalTaskInputs inputs) {
     	project.delete {jniLibs}
-	
         log.lifecycle "Executing NativeDependenciesResolverTask"
-	        dependencies.each { artifact ->
-            log.info "Processing artifact: '$artifact'"
+        dependencies.each { artifact ->
+            log.info "Processing artifact: '$artifact.dependency'"
             copyToJniLibs artifact
         }
     }
 
-    def copyToJniLibs (String artifact) {
+    def copyToJniLibs (NativeDep artifact) {
         String filter
 
-        if (artifact.endsWith(X86_FILTER)) {
+        if (artifact.dependency.endsWith(X86_FILTER)) {
             filter = X86_FILTER
 
-        } else if  (artifact.endsWith(MIPS_FILTER)) {
+        } else if  (artifact.dependency.endsWith(MIPS_FILTER)) {
             filter = MIPS_FILTER
 
-        } else if  (artifact.endsWith(ARM_FILTER)) {
+        } else if  (artifact.dependency.endsWith(ARM_FILTER)) {
             filter = ARM_FILTER
 
-        } else if  (artifact.endsWith(ARMV7A_FILTER)) {
+        } else if  (artifact.dependency.endsWith(ARMV7A_FILTER)) {
             filter = ARMV7A_FILTER
 
         } else {
-            throw new IllegalArgumentException("Unsupported architecture for artifact '$artifact'.")
+            throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
         }
 
 
-        //def (File depFile, String depName) = downloadDep (artifact)
-        def map = downloadDep (artifact)
+        def map = downloadDep (artifact.dependency)
 
         if (!map.isEmpty()) {
-            copyToTarget (map.depFile, filter, map.depName)
+            copyToTarget (map.depFile, filter, map.depName, artifact.shouldPrefixWithLib)
 
         } else {
             throw new StopExecutionException("Failed to retrieve artifcat '$artifact'")
@@ -89,7 +88,7 @@ class NativeDependenciesResolverTask extends DefaultTask {
     /**
      * Download (or use gradle cache) the artifact from the user's defined repositories
      *
-     * @param dep
+     * @param artifact
      * The dependency notation, in one of the accepted notations:
      *
      * native_dependencies {
@@ -108,11 +107,11 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * @return
      *  the dependency {@link java.io.File} or null
      */
-    def downloadDep (String dep) {
-        log.info "Trying to resolve artifact '$dep' using defined repositories"
+    def downloadDep (String artifact) {
+        log.info "Trying to resolve artifact '$artifact' using defined repositories"
 
         def map = [:]
-        Dependency dependency = project.dependencies.create(dep + DEPENDENCY_SUFFIX)
+        Dependency dependency = project.dependencies.create(artifact + DEPENDENCY_SUFFIX)
         Configuration configuration = project.configurations.detachedConfiguration(dependency)
         configuration.setTransitive(false)
 
@@ -121,7 +120,7 @@ class NativeDependenciesResolverTask extends DefaultTask {
                 map ['depFile'] = file
                 map ['depName'] = dependency.getName()
             } else {
-                log.info "Could not find the file corresponding to the artifact '$dep'"
+                log.info "Could not find the file corresponding to the artifact '$artifact'"
             }
         }
         return map
@@ -136,15 +135,21 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * @param architecture
      * supported jniLibs architecture ("x86", "mips", "armeabi" or "armeabi-v7a")
      *
+     * @param shouldPrefixWithLib
+     * enable or disable the standard 'lib' prefix to an artifact name
      */
-    def copyToTarget (File depFile, String architecture, String depName) {
+    def copyToTarget (File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
         project.copy {
             from depFile
             into "$project.projectDir"+File.separator+
                     "src"+File.separator+"main"+File.separator+
                     "jniLibs"+File.separator+"$architecture"
             rename { fileName ->
-                     "lib" + depName+ ".so"
+                if (shouldPrefixWithLib) {
+                    "lib" + depName + ".so"
+                } else {
+                    depName + ".so"
+                }
             }
         }
     }

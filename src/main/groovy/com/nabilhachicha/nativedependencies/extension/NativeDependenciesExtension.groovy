@@ -15,13 +15,19 @@
  */
 
 package com.nabilhachicha.nativedependencies.extension
-
 import org.gradle.api.tasks.StopExecutionException
+import org.gradle.util.ConfigureUtil
 
 class NativeDependenciesExtension {
     final String CONFIGURATION_SEPARATOR = ":"
+    final def classifiers = ['armeabi', 'armeabi-v7a', 'x86', 'mips']
+
     def dependencies = []
-    def classifiers = ['armeabi', 'armeabi-v7a', 'x86', 'mips']
+    /**
+     * set by a closure to let the user choose if he want to disable
+     * prefixing the artifact with 'lib'
+     */
+    boolean addLibPrefixToArtifact = true
 
     /**
      * add {@code dep} to the list of dependencies to retrieve
@@ -29,16 +35,25 @@ class NativeDependenciesExtension {
      * @param dep
      * handle String notation ex: artifact com.snappydb:snappydb-native:0.2.+
      */
-    def artifact (String dep) {
+    def artifact (String dep, Closure... enablePrefixClosure) {
+        if (enablePrefixClosure?.size()>0) {
+            ConfigureUtil.configure(enablePrefixClosure[0], this);
+
+        } else {// reset to default
+            addLibPrefixToArtifact = true;
+        }
+
         def dependency = dep.tokenize(CONFIGURATION_SEPARATOR)
         if (dependency.size() < 3 || dependency.size()>4) {
             throw new StopExecutionException('please specify group:name:version')
 
         } else if (dependency.size() == 3) {//add classifier
-            classifiers.each {dependencies <<  dep + CONFIGURATION_SEPARATOR + it}
+            classifiers.each {
+                dependencies << new NativeDep (dependency: dep + CONFIGURATION_SEPARATOR + it, shouldPrefixWithLib: addLibPrefixToArtifact)
+            }
 
         } else {
-            dependencies << dep
+            dependencies << new NativeDep (dependency: dep, shouldPrefixWithLib: addLibPrefixToArtifact)
         }
     }
 
@@ -51,13 +66,22 @@ class NativeDependenciesExtension {
      * Note: if the user doesn't specify the optional 'classifier', this method will add
      * all the supported architectures to this dependencies ('armeabi', 'armeabi-v7a', 'x86' and 'mips')
      */
-    def artifact (Map m) {
+    def artifact (Map m, Closure... enablePrefixClosure) {
+        if (enablePrefixClosure?.size()>0) {
+            ConfigureUtil.configure(enablePrefixClosure[0], this);
+
+        } else {// reset to default
+            addLibPrefixToArtifact = true;
+        }
+
         String temp = m['group'] + CONFIGURATION_SEPARATOR + m['name'] + CONFIGURATION_SEPARATOR + m['version']
 
         if(!m.containsKey('classifier')) {
-            classifiers.each {dependencies <<  temp + CONFIGURATION_SEPARATOR + it}
+            classifiers.each {
+                dependencies << new NativeDep (dependency: temp + CONFIGURATION_SEPARATOR + it, shouldPrefixWithLib: addLibPrefixToArtifact)
+            }
         } else {
-            dependencies << temp + CONFIGURATION_SEPARATOR + m['classifier']
+            dependencies << new NativeDep (dependency: temp + CONFIGURATION_SEPARATOR + m['classifier'], shouldPrefixWithLib: addLibPrefixToArtifact)
         }
     }
 }

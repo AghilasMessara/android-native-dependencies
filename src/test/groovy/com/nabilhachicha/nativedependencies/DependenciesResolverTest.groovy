@@ -56,6 +56,11 @@ class DependenciesResolverTest {
     File mArmDepFile
     File mArmv7aDepFile
 
+    File mMipsDepFileNoLibPrefix
+    File mX86DepFileNoLibPrefix
+    File mArmDepFileNoLibPrefix
+    File mArmv7aDepFileNoLibPrefix
+
     @Before
     public void setUp() {
         try {
@@ -91,6 +96,11 @@ class DependenciesResolverTest {
             mX86DepFile = new File(mX86Dir, 'libsnappydb-native.so')
             mArmDepFile = new File(mArmDir, 'libsnappydb-native.so')
             mArmv7aDepFile = new File(mArmv7aDir, 'libsnappydb-native.so')
+
+            mMipsDepFileNoLibPrefix = new File(mMipsDir, 'snappydb-native.so')
+            mX86DepFileNoLibPrefix = new File(mX86Dir, 'snappydb-native.so')
+            mArmDepFileNoLibPrefix = new File(mArmDir, 'snappydb-native.so')
+            mArmv7aDepFileNoLibPrefix = new File(mArmv7aDir, 'snappydb-native.so')
 
         } catch (Exception exception) {}
     }
@@ -190,5 +200,59 @@ class DependenciesResolverTest {
     @Test
     public void testUnsupportedArchitectureWithMappingNotation() {
         assertThat(mJniLibs).isNull()
+    }
+
+    // Testing addLibPrefixToArtifact closure
+
+    @Artifacts ("artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'mips') { addLibPrefixToArtifact=false }")
+    @Test
+    public void testDisableLibPrefixStringNotation() {
+        assertThat(mJniLibs).exists()
+        assertThat(mMipsDir).exists()
+        assertThat(mMipsDepFileNoLibPrefix).exists()
+    }
+
+    @Artifacts ("artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'mips') { addLibPrefixToArtifact=true }")
+    @Test
+    public void testEnableLibPrefixStringNotation() {
+        assertThat(mJniLibs).exists()
+        assertThat(mMipsDir).exists()
+        assertThat(mMipsDepFile).exists()
+    }
+
+    @Artifacts (["artifact ('com.snappydb:snappydb-native:0.2.0:mips') { addLibPrefixToArtifact = false } ",
+            "artifact 'com.snappydb:snappydb-native:0.2.0:x86'",
+            "artifact ('com.snappydb:snappydb-native:0.2.0:armeabi') { addLibPrefixToArtifact = false } ",
+            "artifact 'com.snappydb:snappydb-native:0.2.0:armeabi-v7a'"])
+    @Test
+    public void testLibPrefixMixStringNotation() {
+        assertThat(mJniLibs).exists()
+        assertThat(mMipsDir).exists()
+        assertThat(mX86Dir).exists()
+        assertThat(mArmDir).exists()
+        assertThat(mArmv7aDir).exists()
+
+        assertThat(mMipsDepFileNoLibPrefix).exists()
+        assertThat(mX86DepFile).exists()
+        assertThat(mArmDepFileNoLibPrefix).exists()
+        assertThat(mArmv7aDepFile).exists()
+    }
+
+    @Artifacts (["artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'mips') {}",
+            "artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'x86') { addLibPrefixToArtifact=false }",
+            "artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'armeabi')",
+            "artifact (group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'armeabi-v7a') { addLibPrefixToArtifact=false }"])
+    @Test
+    public void testLibPrefixMixMappingNotation() {
+        assertThat(mJniLibs).exists()
+        assertThat(mMipsDir).exists()
+        assertThat(mX86Dir).exists()
+        assertThat(mArmDir).exists()
+        assertThat(mArmv7aDir).exists()
+
+        assertThat(mMipsDepFile).exists()
+        assertThat(mX86DepFileNoLibPrefix).exists()
+        assertThat(mArmDepFile).exists()
+        assertThat(mArmv7aDepFileNoLibPrefix).exists()
     }
 }

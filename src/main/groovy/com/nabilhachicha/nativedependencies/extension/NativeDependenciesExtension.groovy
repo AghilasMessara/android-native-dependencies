@@ -21,7 +21,7 @@ import org.gradle.api.tasks.StopExecutionException
 class NativeDependenciesExtension {
     final String CONFIGURATION_SEPARATOR = ":"
     def dependencies = []
-    def classifiers = ['armeabi', 'armeabi-v7a', 'x86', 'mips']
+    def classifiers = ['armeabi', 'armeabi-v7a', 'x86', 'x86_64', 'mips']
 
     /**
      * add {@code dep} to the list of dependencies to retrieve

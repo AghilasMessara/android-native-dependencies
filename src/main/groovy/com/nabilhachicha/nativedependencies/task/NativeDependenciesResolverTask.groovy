@@ -26,7 +26,6 @@ import org.gradle.api.artifacts.Configuration
 import  org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
-import java.io.File
 
 class NativeDependenciesResolverTask extends DefaultTask {
 	def @Input dependencies
@@ -35,6 +34,7 @@ class NativeDependenciesResolverTask extends DefaultTask {
                                             File.separator+"jniLibs")
 	
     final String X86_FILTER = "x86"
+    final String X86_64_FILTER = "x86_64"
     final String MIPS_FILTER = "mips"
     final String ARM_FILTER = "armeabi"
     final String ARMV7A_FILTER = "armeabi-v7a"
@@ -60,6 +60,9 @@ class NativeDependenciesResolverTask extends DefaultTask {
         if (artifact.endsWith(X86_FILTER)) {
             filter = X86_FILTER
 
+        } else if (artifact.endsWith(X86_64_FILTER)) {
+            filter = X86_64_FILTER
+            
         } else if  (artifact.endsWith(MIPS_FILTER)) {
             filter = MIPS_FILTER
 

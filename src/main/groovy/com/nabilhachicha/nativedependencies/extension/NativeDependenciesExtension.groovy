@@ -24,7 +24,7 @@ class NativeDependenciesExtension {
 
     def dependencies = []
     /**
-     * set by a closure to let the user choose if he want to disable
+     * set by a closure to let the user choose if he/she wants to disable
      * prefixing the artifact with 'lib'
      */
     boolean addLibPrefixToArtifact = true

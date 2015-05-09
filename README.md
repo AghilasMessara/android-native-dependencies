@@ -14,7 +14,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:0.10.+'
-    classpath 'com.nabilhachicha:android-native-dependencies:0.1'
+    classpath 'com.nabilhachicha:android-native-dependencies:0.1+'
   }
 }
 
@@ -22,8 +22,8 @@ apply plugin: 'android'
 apply plugin: 'android-native-dependencies'
 
 native_dependencies {
-    artifact 'com.snappydb:snappydb-native:0.2+:armeabi'
-    artifact 'com.snappydb:snappydb-native:0.2+:x86'
+    artifact 'com.snappydb:snappydb-native:0.2.+:armeabi'
+    artifact 'com.snappydb:snappydb-native:0.2.+:x86'
 }
 
 dependencies {

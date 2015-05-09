@@ -20,8 +20,7 @@ import org.gradle.util.ConfigureUtil
 
 class NativeDependenciesExtension {
     final String CONFIGURATION_SEPARATOR = ":"
-    final def classifiers = ['armeabi', 'armeabi-v7a', 'x86', 'mips']
-
+    final def classifiers = ['armeabi', 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64', 'mips', 'mips64']
     def dependencies = []
     /**
      * set by a closure to let the user choose if he/she wants to disable

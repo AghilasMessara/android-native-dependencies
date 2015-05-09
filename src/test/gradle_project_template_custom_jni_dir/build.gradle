@@ -21,6 +21,18 @@ repositories {
 android {
     compileSdkVersion 19
     buildToolsVersion "19.1.0"
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+            jniLibs.srcDirs = ['src/main/native_libs']
+        }
+    }
 }
+
 
 

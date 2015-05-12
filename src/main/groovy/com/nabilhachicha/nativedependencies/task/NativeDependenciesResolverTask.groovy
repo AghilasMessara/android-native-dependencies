@@ -16,37 +16,39 @@
 
 package com.nabilhachicha.nativedependencies.task
 
+import com.nabilhachicha.nativedependencies.extension.NativeDep
+import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ResolveException
 import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
-import org.gradle.api.tasks.StopExecutionException
-import org.gradle.api.artifacts.Dependency
-import org.gradle.api.DefaultTask
-import org.gradle.api.tasks.TaskAction
-import org.gradle.api.artifacts.Configuration
-import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
-import java.io.File
-import com.nabilhachicha.nativedependencies.extension.NativeDep
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.incremental.IncrementalTaskInputs
 
 class NativeDependenciesResolverTask extends DefaultTask {
-	def @Input dependencies
-	def @OutputDirectory jniLibs = new File("$project.projectDir"+File.separator+"src" +
-                                            File.separator+"main"+
-                                            File.separator+"jniLibs")
-	
+    def @Input
+            dependencies
+    def @OutputDirectory
+            jniLibs = project.android.sourceSets.main.jniLibs.srcDirs.first()
+
     final String X86_FILTER = "x86"
+    final String X86_64_FILTER = "x86_64"
     final String MIPS_FILTER = "mips"
+    final String MIPS_64_FILTER = "mips64"
     final String ARM_FILTER = "armeabi"
     final String ARMV7A_FILTER = "armeabi-v7a"
+    final String ARM64_FILTER = "arm64-v8a"
     final String DEPENDENCY_SUFFIX = "@so"
     final String ARTIFACT_FILE_EXT = ".so"
 
     final Logger log = Logging.getLogger NativeDependenciesResolverTask
 
     @TaskAction
-    def exec (IncrementalTaskInputs inputs) {
-    	project.delete {jniLibs}
+    def exec(IncrementalTaskInputs inputs) {
+        project.delete { jniLibs }
         log.lifecycle "Executing NativeDependenciesResolverTask"
         dependencies.each { artifact ->
             log.info "Processing artifact: '$artifact.dependency'"
@@ -54,36 +56,47 @@ class NativeDependenciesResolverTask extends DefaultTask {
         }
     }
 
-    def copyToJniLibs (NativeDep artifact) {
+    def copyToJniLibs(NativeDep artifact) {
         String filter
 
         if (artifact.dependency.endsWith(X86_FILTER)) {
             filter = X86_FILTER
 
-        } else if  (artifact.dependency.endsWith(MIPS_FILTER)) {
+        } else if (artifact.dependency.endsWith(X86_64_FILTER)) {
+            filter = X86_64_FILTER
+
+        } else if (artifact.dependency.endsWith(MIPS_FILTER)) {
             filter = MIPS_FILTER
 
-        } else if  (artifact.dependency.endsWith(ARM_FILTER)) {
+        } else if (artifact.dependency.endsWith(MIPS_64_FILTER)) {
+            filter = MIPS_64_FILTER
+
+        } else if (artifact.dependency.endsWith(ARM_FILTER)) {
             filter = ARM_FILTER
 
-        } else if  (artifact.dependency.endsWith(ARMV7A_FILTER)) {
+        } else if (artifact.dependency.endsWith(ARMV7A_FILTER)) {
             filter = ARMV7A_FILTER
+
+        } else if (artifact.dependency.endsWith(ARM64_FILTER)) {
+            filter = ARM64_FILTER
 
         } else {
             throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
         }
 
+        try {
+            def map = downloadDep(artifact.dependency)
+            if (!map.isEmpty()) {
+                copyToTarget(map.depFile, filter, map.depName, artifact.shouldPrefixWithLib)
 
-        def map = downloadDep (artifact.dependency)
+            } else {
+                log.warn("Failed to retrieve artifcat '$artifact'")
+            }
 
-        if (!map.isEmpty()) {
-            copyToTarget (map.depFile, filter, map.depName, artifact.shouldPrefixWithLib)
-
-        } else {
-            throw new StopExecutionException("Failed to retrieve artifcat '$artifact'")
+        } catch (ResolveException e) {
+            log.warn("Could not resolve artifcat '$artifact'", e)
         }
     }
-
 
     /**
      * Download (or use gradle cache) the artifact from the user's defined repositories
@@ -102,12 +115,11 @@ class NativeDependenciesResolverTask extends DefaultTask {
      *   artifact group: 'com.snappydb', name: 'snappydb-native', version: '0.2.0', classifier: 'armeabi'
      *   //or
      *   artifact com.snappydb:snappydb-native:0.2.+:armeabi
-     * }
-     *
+     *}*
      * @return
-     *  the dependency {@link java.io.File} or null
+     * the dependency {@link java.io.File} or null
      */
-    def downloadDep (String artifact) {
+    def downloadDep(String artifact) {
         log.info "Trying to resolve artifact '$artifact' using defined repositories"
 
         def map = [:]
@@ -117,8 +129,8 @@ class NativeDependenciesResolverTask extends DefaultTask {
 
         configuration.files.each { file ->
             if (file.isFile() && file.name.endsWith(ARTIFACT_FILE_EXT)) {
-                map ['depFile'] = file
-                map ['depName'] = dependency.getName()
+                map['depFile'] = file
+                map['depName'] = dependency.getName()
             } else {
                 log.info "Could not find the file corresponding to the artifact '$artifact'"
             }
@@ -133,17 +145,16 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * {@link java.io.File} to copy
      *
      * @param architecture
-     * supported jniLibs architecture ("x86", "mips", "armeabi" or "armeabi-v7a")
+     * supported jniLibs architecture ("x86", "x86_64", "mips", "mips64", "armeabi", "armeabi-v7a" or "arm64-v8a")
      *
      * @param shouldPrefixWithLib
      * enable or disable the standard 'lib' prefix to an artifact name
      */
-    def copyToTarget (File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
+    def copyToTarget(File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
         project.copy {
             from depFile
-            into "$project.projectDir"+File.separator+
-                    "src"+File.separator+"main"+File.separator+
-                    "jniLibs"+File.separator+"$architecture"
+            into "$jniLibs" + File.separator + "$architecture"
+
             rename { fileName ->
                 if (shouldPrefixWithLib) {
                     "lib" + depName + ".so"

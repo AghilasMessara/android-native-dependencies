@@ -13,8 +13,8 @@ buildscript {
     mavenCentral()
   }
   dependencies {
-    classpath 'com.android.tools.build:gradle:0.10.+'
-    classpath 'com.nabilhachicha:android-native-dependencies:0.1+'
+    classpath 'com.android.tools.build:gradle:1.0.0'
+    classpath 'com.nabilhachicha:android-native-dependencies:0.1.2'
   }
 }
 

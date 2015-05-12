@@ -31,7 +31,7 @@ repositories {
 }
 
 group = 'com.nabilhachicha'
-version = '0.1.2.5'
+version = '0.1.2'
 
 modifyPom {
     project {

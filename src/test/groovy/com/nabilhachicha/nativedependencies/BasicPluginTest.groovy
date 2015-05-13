@@ -19,22 +19,12 @@ import com.nabilhachicha.nativedependencies.task.NativeDependenciesResolverTask
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.junit.Test
-import org.gradle.api.tasks.TaskInstantiationException
+import org.gradle.api.internal.plugins.PluginApplicationException
 import static org.junit.Assert.assertTrue
-
-import org.gradle.tooling.BuildLauncher;
-import org.gradle.tooling.GradleConnector;
-import org.gradle.tooling.ProjectConnection;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import org.junit.Rule
-import com.nabilhachicha.nativedependencies.utils.TempGradleProject
-import static org.fest.assertions.api.Assertions.assertThat
 
 class BasicPluginTest {
 
-    @Test(expected = TaskInstantiationException.class)
+    @Test(expected = PluginApplicationException.class)
     public void testShouldApplyAndroidPluginBefore() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'android-native-dependencies'
@@ -43,7 +33,7 @@ class BasicPluginTest {
     @Test
     public void testTaskCreation() {
         Project project = ProjectBuilder.builder().build()
-        project.apply plugin: 'android'
+        project.apply plugin: 'com.android.application'
         project.apply plugin: 'android-native-dependencies'
         def task = project.task('resolveNativeDependencies', type: NativeDependenciesResolverTask)
 

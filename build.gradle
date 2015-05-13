@@ -7,21 +7,21 @@ buildscript {
     }
 
     dependencies {
-        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.2'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:0.3'
+        classpath 'org.gradle.api.plugins:gradle-nexus-plugin:0.3'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
     }
 }
 
 apply plugin: 'groovy'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'bintray'
+apply plugin: 'com.jfrog.bintray'
 apply plugin: 'nexus'
 
 dependencies {
     compile gradleApi()
     compile localGroovy()
-    compile 'com.android.tools.build:gradle:0.10.+'
+    compile 'com.android.tools.build:gradle:1.1.0'
     compile 'commons-io:commons-io:2.4'
     testCompile 'org.easytesting:fest-assert-core:2.0M10'
 }
@@ -31,7 +31,7 @@ repositories {
 }
 
 group = 'com.nabilhachicha'
-version = '0.1.1'
+version = '0.1.2'
 
 modifyPom {
     project {
@@ -126,8 +126,8 @@ bintray {
         name = 'android-native-dependencies'
         licenses = ['Apache-2.0']
     }
+}
 
-    task wrapper(type: Wrapper) {
-        gradleVersion = '1.12'
-    }
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.2'
 }

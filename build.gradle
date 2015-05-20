@@ -131,3 +131,8 @@ bintray {
 task wrapper(type: Wrapper) {
     gradleVersion = '2.2'
 }
+
+compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_6
+    targetCompatibility JavaVersion.VERSION_1_6
+}

@@ -1,3 +1,7 @@
+Version 0.1.3 *(2015-06-09)*
+----------------------------
+- Fixes #9 Unsupported major.minor version 52.0
+
 Version 0.1.2 *(2015-05-12)*
 ----------------------------
 - Add support for 64bit ABI

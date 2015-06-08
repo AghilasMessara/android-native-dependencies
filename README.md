@@ -14,7 +14,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:1.0.0'
-    classpath 'com.nabilhachicha:android-native-dependencies:0.1.2'
+    classpath 'com.nabilhachicha:android-native-dependencies:0.1.3'
   }
 }
 

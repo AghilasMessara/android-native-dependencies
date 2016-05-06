@@ -41,8 +41,8 @@ class NativeDependenciesResolverTask extends DefaultTask {
     final String ARM_FILTER = "armeabi"
     final String ARMV7A_FILTER = "armeabi-v7a"
     final String ARM64_FILTER = "arm64-v8a"
-    final String DEPENDENCY_SUFFIX = "@so"
-    final String ARTIFACT_FILE_EXT = ".so"
+    final String DEPENDENCY_SUFFIX = "@apk"
+    final String ARTIFACT_FILE_EXT = ".apk"
 
     final Logger log = Logging.getLogger NativeDependenciesResolverTask
 
@@ -80,9 +80,13 @@ class NativeDependenciesResolverTask extends DefaultTask {
         } else if (artifact.dependency.endsWith(ARM64_FILTER)) {
             filter = ARM64_FILTER
 
-        } else {
-            throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
+        }else{
+            //TODO
+            filter = ARM_FILTER
         }
+//        else {
+//            throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
+//        }
 
         try {
             def map = downloadDep(artifact.dependency)

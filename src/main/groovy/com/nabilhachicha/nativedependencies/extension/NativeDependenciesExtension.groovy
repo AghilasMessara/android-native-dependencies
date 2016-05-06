@@ -15,6 +15,7 @@
  */
 
 package com.nabilhachicha.nativedependencies.extension
+
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.util.ConfigureUtil
 
@@ -34,8 +35,8 @@ class NativeDependenciesExtension {
      * @param dep
      * handle String notation ex: artifact com.snappydb:snappydb-native:0.2.+
      */
-    def artifact (String dep, Closure... enablePrefixClosure) {
-        if (enablePrefixClosure?.size()>0) {
+    def artifact(String dep, Closure... enablePrefixClosure) {
+        if (enablePrefixClosure?.size() > 0) {
             ConfigureUtil.configure(enablePrefixClosure[0], this);
 
         } else {// reset to default
@@ -43,16 +44,13 @@ class NativeDependenciesExtension {
         }
 
         def dependency = dep.tokenize(CONFIGURATION_SEPARATOR)
-        if (dependency.size() < 3 || dependency.size()>4) {
+        if (dependency.size() < 3 || dependency.size() > 4) {
             throw new StopExecutionException('please specify group:name:version')
 
         } else if (dependency.size() == 3) {//add classifier
-            classifiers.each {
-                dependencies << new NativeDep (dependency: dep + CONFIGURATION_SEPARATOR + it, shouldPrefixWithLib: addLibPrefixToArtifact)
-            }
-
+            dependencies << new NativeDep(dependency: dep, shouldPrefixWithLib: addLibPrefixToArtifact)
         } else {
-            dependencies << new NativeDep (dependency: dep, shouldPrefixWithLib: addLibPrefixToArtifact)
+            dependencies << new NativeDep(dependency: dep, shouldPrefixWithLib: addLibPrefixToArtifact)
         }
     }
 
@@ -65,8 +63,8 @@ class NativeDependenciesExtension {
      * Note: if the user doesn't specify the optional 'classifier', this method will add
      * all the supported architectures to this dependencies ('armeabi', 'armeabi-v7a', 'x86' and 'mips')
      */
-    def artifact (Map m, Closure... enablePrefixClosure) {
-        if (enablePrefixClosure?.size()>0) {
+    def artifact(Map m, Closure... enablePrefixClosure) {
+        if (enablePrefixClosure?.size() > 0) {
             ConfigureUtil.configure(enablePrefixClosure[0], this);
 
         } else {// reset to default
@@ -75,12 +73,12 @@ class NativeDependenciesExtension {
 
         String temp = m['group'] + CONFIGURATION_SEPARATOR + m['name'] + CONFIGURATION_SEPARATOR + m['version']
 
-        if(!m.containsKey('classifier')) {
+        if (!m.containsKey('classifier')) {
             classifiers.each {
-                dependencies << new NativeDep (dependency: temp + CONFIGURATION_SEPARATOR + it, shouldPrefixWithLib: addLibPrefixToArtifact)
+                dependencies << new NativeDep(dependency: temp + CONFIGURATION_SEPARATOR + it, shouldPrefixWithLib: addLibPrefixToArtifact)
             }
         } else {
-            dependencies << new NativeDep (dependency: temp + CONFIGURATION_SEPARATOR + m['classifier'], shouldPrefixWithLib: addLibPrefixToArtifact)
+            dependencies << new NativeDep(dependency: temp + CONFIGURATION_SEPARATOR + m['classifier'], shouldPrefixWithLib: addLibPrefixToArtifact)
         }
     }
 }

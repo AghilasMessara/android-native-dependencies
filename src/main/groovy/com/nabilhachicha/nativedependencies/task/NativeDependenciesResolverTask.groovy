@@ -48,7 +48,7 @@ class NativeDependenciesResolverTask extends DefaultTask {
 
     @TaskAction
     def exec(IncrementalTaskInputs inputs) {
-        project.delete { jniLibs }
+//        project.delete { jniLibs }
         log.lifecycle "Executing NativeDependenciesResolverTask"
         dependencies.each { artifact ->
             log.info "Processing artifact: '$artifact.dependency'"
@@ -80,7 +80,7 @@ class NativeDependenciesResolverTask extends DefaultTask {
         } else if (artifact.dependency.endsWith(ARM64_FILTER)) {
             filter = ARM64_FILTER
 
-        }else{
+        } else {
             //TODO
             filter = ARM_FILTER
         }

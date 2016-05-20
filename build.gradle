@@ -127,8 +127,8 @@ bintray {
 }
 
 //定义GroupID和Version，ArtefactID会自动使用Project名
-group = 'com.codeMc.nativePlugin'
-version = '2.9'
+group = 'com.quvideo.nativePlugin'
+version = '3.0'
 
 signing {
     required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
@@ -139,7 +139,7 @@ uploadArchives {
     configuration = configurations.archives
     repositories.mavenDeployer {
         beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-        repository(url: 'http://192.168.1.3:8081/nexus/content/repositories/VivoVideo/') {//仓库地址
+        repository(url: 'http://192.168.1.3:8081/nexus/content/repositories/VivaVideo/') {//仓库地址
             authentication(userName: "admin",//用户名
                     password: "admin123")//密码
         }
@@ -148,7 +148,7 @@ uploadArchives {
             name project.name
             packaging 'jar'
             description 'none'
-            url 'http://192.168.1.3:8081/nexus/content/repositories/VivoVideo/'//仓库地址
+            url 'http://192.168.1.3:8081/nexus/content/repositories/VivaVideo/'//仓库地址
 
             developers {
                 developer {

@@ -155,6 +155,10 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * enable or disable the standard 'lib' prefix to an artifact name
      */
     def copyToTarget(File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
+        project.delete {
+            "$jniLibs" + File.separator + "$architecture" + File.separator + "lib" + depName + ".so"
+        }
+        log.info "Could '$jniLibs'  File.separator  '$architecture' lib '$depName' .so"
         project.copy {
             from depFile
             into "$jniLibs" + File.separator + "$architecture"

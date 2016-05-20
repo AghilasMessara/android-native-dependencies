@@ -128,7 +128,7 @@ bintray {
 
 //定义GroupID和Version，ArtefactID会自动使用Project名
 group = 'com.quvideo.nativePlugin'
-version = '3.0'
+version = '3.4'
 
 signing {
     required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }

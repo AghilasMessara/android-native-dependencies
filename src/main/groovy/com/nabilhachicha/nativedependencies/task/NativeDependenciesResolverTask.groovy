@@ -27,6 +27,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+//import java.io.File
 
 class NativeDependenciesResolverTask extends DefaultTask {
     def @Input
@@ -41,14 +42,14 @@ class NativeDependenciesResolverTask extends DefaultTask {
     final String ARM_FILTER = "armeabi"
     final String ARMV7A_FILTER = "armeabi-v7a"
     final String ARM64_FILTER = "arm64-v8a"
-    final String DEPENDENCY_SUFFIX = "@so"
-    final String ARTIFACT_FILE_EXT = ".so"
+    final String DEPENDENCY_SUFFIX = "@apk"
+    final String ARTIFACT_FILE_EXT = ".apk"
 
     final Logger log = Logging.getLogger NativeDependenciesResolverTask
 
     @TaskAction
     def exec(IncrementalTaskInputs inputs) {
-        project.delete { jniLibs }
+//        project.delete { jniLibs }
         log.lifecycle "Executing NativeDependenciesResolverTask"
         dependencies.each { artifact ->
             log.info "Processing artifact: '$artifact.dependency'"
@@ -81,10 +82,17 @@ class NativeDependenciesResolverTask extends DefaultTask {
             filter = ARM64_FILTER
 
         } else {
-            throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
+            //TODO
+            filter = ARM_FILTER
         }
+//        else {
+//            throw new IllegalArgumentException("Unsupported architecture for artifact '${artifact.dependency}'.")
+//        }
 
         try {
+            //read load local APK
+//            def filename = "localso.config"
+
             def map = downloadDep(artifact.dependency)
             if (!map.isEmpty()) {
                 copyToTarget(map.depFile, filter, map.depName, artifact.shouldPrefixWithLib)
@@ -97,6 +105,15 @@ class NativeDependenciesResolverTask extends DefaultTask {
             log.warn("Could not resolve artifcat '$artifact'", e)
         }
     }
+//
+//    def readLine(fileName) {
+//        def text
+//        new File(fileName).eachLine { line ->
+//            println "Line: ${line}"
+//            text = "${line} ${text} :"
+//        }
+//        return text
+//    }
 
     /**
      * Download (or use gradle cache) the artifact from the user's defined repositories
@@ -151,6 +168,10 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * enable or disable the standard 'lib' prefix to an artifact name
      */
     def copyToTarget(File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
+        project.delete {
+            "$jniLibs" + File.separator + "$architecture" + File.separator + "lib" + depName + ".so"
+        }
+        log.info "Could '$jniLibs'  File.separator  '$architecture' lib '$depName' .so"
         project.copy {
             from depFile
             into "$jniLibs" + File.separator + "$architecture"

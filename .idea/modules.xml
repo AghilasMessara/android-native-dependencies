@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/android-native-dependencies.iml" filepath="$PROJECT_DIR$/android-native-dependencies.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-native-dependencies.iml" filepath="$PROJECT_DIR$/.idea/modules/android-native-dependencies.iml" />
     </modules>
   </component>
 </project>

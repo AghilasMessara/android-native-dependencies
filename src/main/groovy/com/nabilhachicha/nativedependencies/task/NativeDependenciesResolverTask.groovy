@@ -27,6 +27,7 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.incremental.IncrementalTaskInputs
+//import java.io.File
 
 class NativeDependenciesResolverTask extends DefaultTask {
     def @Input
@@ -89,6 +90,9 @@ class NativeDependenciesResolverTask extends DefaultTask {
 //        }
 
         try {
+            //read load local APK
+//            def filename = "localso.config"
+
             def map = downloadDep(artifact.dependency)
             if (!map.isEmpty()) {
                 copyToTarget(map.depFile, filter, map.depName, artifact.shouldPrefixWithLib)
@@ -101,6 +105,15 @@ class NativeDependenciesResolverTask extends DefaultTask {
             log.warn("Could not resolve artifcat '$artifact'", e)
         }
     }
+//
+//    def readLine(fileName) {
+//        def text
+//        new File(fileName).eachLine { line ->
+//            println "Line: ${line}"
+//            text = "${line} ${text} :"
+//        }
+//        return text
+//    }
 
     /**
      * Download (or use gradle cache) the artifact from the user's defined repositories

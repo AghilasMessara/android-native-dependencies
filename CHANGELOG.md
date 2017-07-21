@@ -1,3 +1,7 @@
+Version 0.1.4 *(2017-07-21)*
+----------------------------
+- Add support for the so file packaged as jar format
+
 Version 0.1.2 *(2015-05-12)*
 ----------------------------
 - Add support for 64bit ABI

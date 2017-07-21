@@ -43,6 +43,8 @@ class NativeDependenciesResolverTask extends DefaultTask {
     final String ARM64_FILTER = "arm64-v8a"
     final String DEPENDENCY_SUFFIX = "@so"
     final String ARTIFACT_FILE_EXT = ".so"
+    final String DEPENDENCY_JAR_SUFFIX = "@jar"
+    final String ARTIFACT_JAR_FILE_EXT = ".jar"
 
     final Logger log = Logging.getLogger NativeDependenciesResolverTask
 
@@ -58,26 +60,30 @@ class NativeDependenciesResolverTask extends DefaultTask {
 
     def copyToJniLibs(NativeDep artifact) {
         String filter
+        String depStr = artifact.dependency
+        if(depStr.indexOf("@") > 0){
+            depStr = depStr.substring(0,depStr.indexOf("@"))
+        }
 
-        if (artifact.dependency.endsWith(X86_FILTER)) {
+        if (depStr.endsWith(X86_FILTER)) {
             filter = X86_FILTER
 
-        } else if (artifact.dependency.endsWith(X86_64_FILTER)) {
+        } else if (depStr.endsWith(X86_64_FILTER)) {
             filter = X86_64_FILTER
 
-        } else if (artifact.dependency.endsWith(MIPS_FILTER)) {
+        } else if (depStr.endsWith(MIPS_FILTER)) {
             filter = MIPS_FILTER
 
-        } else if (artifact.dependency.endsWith(MIPS_64_FILTER)) {
+        } else if (depStr.endsWith(MIPS_64_FILTER)) {
             filter = MIPS_64_FILTER
 
-        } else if (artifact.dependency.endsWith(ARM_FILTER)) {
+        } else if (depStr.endsWith(ARM_FILTER)) {
             filter = ARM_FILTER
 
-        } else if (artifact.dependency.endsWith(ARMV7A_FILTER)) {
+        } else if (depStr.endsWith(ARMV7A_FILTER)) {
             filter = ARMV7A_FILTER
 
-        } else if (artifact.dependency.endsWith(ARM64_FILTER)) {
+        } else if (depStr.endsWith(ARM64_FILTER)) {
             filter = ARM64_FILTER
 
         } else {
@@ -123,12 +129,22 @@ class NativeDependenciesResolverTask extends DefaultTask {
         log.info "Trying to resolve artifact '$artifact' using defined repositories"
 
         def map = [:]
-        Dependency dependency = project.dependencies.create(artifact + DEPENDENCY_SUFFIX)
+
+        Dependency dependency = null
+        if (!artifact.endsWith(DEPENDENCY_SUFFIX) && !artifact.endsWith(DEPENDENCY_JAR_SUFFIX)) {
+            dependency = project.dependencies.create(artifact + DEPENDENCY_SUFFIX)
+        } else {
+            dependency = project.dependencies.create(artifact)
+        }
+
         Configuration configuration = project.configurations.detachedConfiguration(dependency)
         configuration.setTransitive(false)
 
         configuration.files.each { file ->
             if (file.isFile() && file.name.endsWith(ARTIFACT_FILE_EXT)) {
+                map['depFile'] = file
+                map['depName'] = dependency.getName()
+            } else if (file.isFile() && file.name.endsWith(ARTIFACT_JAR_FILE_EXT)) {
                 map['depFile'] = file
                 map['depName'] = dependency.getName()
             } else {
@@ -151,17 +167,37 @@ class NativeDependenciesResolverTask extends DefaultTask {
      * enable or disable the standard 'lib' prefix to an artifact name
      */
     def copyToTarget(File depFile, String architecture, String depName, boolean shouldPrefixWithLib) {
-        project.copy {
-            from depFile
-            into "$jniLibs" + File.separator + "$architecture"
+        //jar file, just like: http://central.maven.org/maven2/com/badlogicgames/gdx/gdx-platform/1.9.6/gdx-platform-1.9.6-natives-armeabi-v7a.jar
+        if (depFile.name.endsWith(ARTIFACT_JAR_FILE_EXT)) {
+            log.info "copy and unzip jar file '$depFile.absoluteFile'"
+            project.copy {
+                from project.zipTree(depFile.absoluteFile)
+                into "$jniLibs" + File.separator + "$architecture"
+                include '*.so'
+                rename { fileName ->
+                    if (shouldPrefixWithLib) {
+                        "lib" + fileName
+                    } else {
+                        fileName
+                    }
+                }
+            }
+        } else {
+            // like http://central.maven.org/maven2/com/snappydb/snappydb-native/0.2.0/snappydb-native-0.2.0.so
+            log.info "copy so file '$depFile.name'"
+            project.copy {
+                from depFile
+                into "$jniLibs" + File.separator + "$architecture"
 
-            rename { fileName ->
-                if (shouldPrefixWithLib) {
-                    "lib" + depName + ".so"
-                } else {
-                    depName + ".so"
+                rename { fileName ->
+                    if (shouldPrefixWithLib) {
+                        "lib" + depName + ".so"
+                    } else {
+                        depName + ".so"
+                    }
                 }
             }
         }
+
     }
 }

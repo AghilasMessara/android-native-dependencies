@@ -200,4 +200,17 @@ class DependenciesResolverTest {
         assertThat(gradleProject.mArmDepFile).exists()
         assertThat(gradleProject.mArmv7aDepFileNoLibPrefix).exists()
     }
+
+    @Artifacts(["artifact ('com.badlogicgames.gdx:gdx-platform:1.9.6:natives-armeabi-v7a@jar') { addLibPrefixToArtifact = false }",
+            "artifact ('com.badlogicgames.gdx:gdx-platform:1.9.6:natives-x86@jar') { addLibPrefixToArtifact = false }"])
+    @Test
+    public void testJarPackage() {
+        assertThat(gradleProject.mJniLibs).exists()
+
+        assertThat(gradleProject.mArmv7aDir).exists()
+        assertThat(gradleProject.mX86Dir).exists()
+
+        assertThat(new File(gradleProject.mArmv7aDir, 'libgdx.so')).exists()
+        assertThat(new File(gradleProject.mX86Dir, 'libgdx.so')).exists()
+    }
 }

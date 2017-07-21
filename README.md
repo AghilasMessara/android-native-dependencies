@@ -24,7 +24,7 @@ apply plugin: 'android-native-dependencies'
 native_dependencies {
     artifact 'com.snappydb:snappydb-native:0.2.+:armeabi'
     artifact 'com.snappydb:snappydb-native:0.2.+:x86'
-    artifact (ext.gdx["gdx-platform-natives-armeabi-v7a"]) { addLibPrefixToArtifact = false }
+    artifact (com.badlogicgames.gdx:gdx-platform:1.9.6:natives-armeabi-v7a@jar) { addLibPrefixToArtifact = false }
 }
 
 dependencies {
@@ -107,5 +107,3 @@ License
     limitations under the License.
 
 [![Build Status](https://travis-ci.org/nhachicha/android-native-dependencies.svg?branch=master)](https://travis-ci.org/nhachicha/android-native-dependencies)
-
-

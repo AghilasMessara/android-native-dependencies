@@ -11,7 +11,6 @@ Apply the plugin in your `build.gradle` after the regular `android` plugin, then
 buildscript {
   repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:1.0.0'

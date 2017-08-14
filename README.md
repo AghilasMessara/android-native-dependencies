@@ -14,7 +14,7 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:1.0.0'
-    classpath 'com.brooklet:android-native-dependencies:0.1.4'
+    classpath 'com.nabilhachicha:android-native-dependencies:0.1.2'
   }
 }
 
@@ -24,7 +24,6 @@ apply plugin: 'android-native-dependencies'
 native_dependencies {
     artifact 'com.snappydb:snappydb-native:0.2.+:armeabi'
     artifact 'com.snappydb:snappydb-native:0.2.+:x86'
-    artifact (com.badlogicgames.gdx:gdx-platform:1.9.6:natives-armeabi-v7a@jar) { addLibPrefixToArtifact = false }
 }
 
 dependencies {
@@ -92,7 +91,7 @@ The plugin uses [Gradle incremental task](http://www.gradle.org/docs/current/dsl
 License
 =======
 
-    Copyright 2017 Nabil Hachicha
+    Copyright 2014 Nabil Hachicha
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -107,3 +106,5 @@ License
     limitations under the License.
 
 [![Build Status](https://travis-ci.org/nhachicha/android-native-dependencies.svg?branch=master)](https://travis-ci.org/nhachicha/android-native-dependencies)
+
+

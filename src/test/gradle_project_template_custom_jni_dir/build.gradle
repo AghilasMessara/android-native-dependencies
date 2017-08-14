@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1.2'
+        classpath group: 'com.nabilhachicha', name: 'android-native-dependencies', version: '0.1.4'
         classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.10.1'
     }
 }

@@ -30,20 +30,20 @@ repositories {
     mavenCentral()
 }
 
-group = 'com.brooklet'
-version = '0.1.4'
+group = 'com.nabilhachicha'
+version = '0.1.2'
 
 modifyPom {
     project {
         name 'Android Native Dependencies'
         description 'Gradle plugin for resolving and downloading Android native dependencies (.so)'
-        url 'https://github.com/brooklet/android-native-dependencies'
-        inceptionYear '2017'
+        url 'https://github.com/nhachicha/android-native-dependencies'
+        inceptionYear '2014'
 
         scm {
-            url 'https://github.com/brooklet/android-native-dependencies'
-            connection 'scm:git:git://github.com/brooklet/android-native-dependencies.git'
-            developerConnection 'scm:git:ssh://git@github.com/brooklet/android-native-dependencies.git'
+            url 'https://github.com/nhachicha/android-native-dependencies'
+            connection 'scm:git:git://github.com/nhachicha/android-native-dependencies.git'
+            developerConnection 'scm:git:ssh://git@github.com/nhachicha/android-native-dependencies.git'
         }
 
         licenses {
@@ -56,9 +56,9 @@ modifyPom {
 
         developers {
             developer {
-                id 'ezhangliang'
-                name 'zhangliang'
-                email 'ezhangliang@gmail.com'
+                id 'nhachicha'
+                name 'Nabil Hachicha'
+                email 'nabil.hachicha@gmail.com'
             }
         }
     }
@@ -92,14 +92,14 @@ publishing {
             pom.withXml {
                 def root = asNode()
                 root.appendNode('name', 'Android Native Dependencies')
-                root.appendNode('url', 'https://github.com/brooklet/android-native-dependencies')
+                root.appendNode('url', 'https://github.com/nhachicha/android-native-dependencies')
                 root.appendNode('description', 'Gradle plugin for resolving and downloading Android native dependencies (.so)')
-                root.appendNode('inceptionYear', '2017')
+                root.appendNode('inceptionYear', '2014')
 
                 def scm = root.appendNode('scm')
-                scm.appendNode('url', 'https://github.com/brooklet/android-native-dependencies')
-                scm.appendNode('connection', 'scm:git:git://github.com/brooklet/android-native-dependencies.git')
-                scm.appendNode('developerConnection', 'scm:git:ssh://git@github.com/brooklet/android-native-dependencies.git')
+                scm.appendNode('url', 'https://github.com/nhachicha/android-native-dependencies')
+                scm.appendNode('connection', 'scm:git:git://github.com/nhachicha/android-native-dependencies.git')
+                scm.appendNode('developerConnection', 'scm:git:ssh://git@github.com/nhachicha/android-native-dependencies.git')
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'The Apache Software License, Version 2.0')
@@ -108,9 +108,9 @@ publishing {
 
                 def developers = root.appendNode('developers')
                 def nabil = developers.appendNode('developer')
-                nabil.appendNode('id', 'ezhangliang')
-                nabil.appendNode('name', 'zhangliang')
-                nabil.appendNode('email', 'ezhangliang@gmail.com')
+                nabil.appendNode('id', 'nhachicha')
+                nabil.appendNode('name', 'Nabil Hachicha')
+                nabil.appendNode('email', 'nabil.hachicha@gmail.com')
             }
         }
     }
